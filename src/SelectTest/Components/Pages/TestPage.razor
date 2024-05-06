@@ -98,6 +98,7 @@
   void RefreshInMemoryList()
   {
     _inMemoryData = _testData?.ToList();
+    StateHasChanged();
   }
 
   void GenerateTestData()
@@ -107,6 +108,7 @@
                             {
                               Name = $"Test {i}",
                             }).ToList();
+    StateHasChanged();
   }
 
   internal class TestClass
