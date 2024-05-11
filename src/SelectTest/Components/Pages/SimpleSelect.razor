@@ -1,22 +1,8 @@
-﻿@page "/testpage"
+﻿@page "/simpleselect"
 
-@rendermode @(new InteractiveServerRenderMode(false))
+<PageTitle>Simple Select</PageTitle>
 
-<PageTitle>Test Page</PageTitle>
-
-<h3>Test Page</h3>
-
-<h4>Test instructions</h4>
-
-<ol>
-  <li>Click the button to generate test data</li>
-  <li>Make changes to the enum selection (as many as you wish)</li>
-  <li>Click the button to refresh the in memory data</li>
-  <li>Observe the in memory data matches what you selected initially</li>
-  <li>Click the button to generate test data (yes, again)</li>
-  <li>Click the button to refresh the in memory data (yes, again)</li>
-  <li>Notice what you have in memory, no longer matches what is on the page</li>
-</ol>
+<h3>SimpleSelect</h3>
 
 <button class="btn btn-success" @onclick=GenerateTestData>Generate Test Data</button>
 
@@ -36,22 +22,20 @@
         <tr>
           <td>@item.Name</td>
           <td>
-            <FluentSelect TOption="TestEnum01"
-                          ValueChanged="(newValue) => item.TestEnum01 = Enum.Parse<TestEnum01>(newValue)">
+            <select @bind=item.TestEnum01 >
               @foreach (var value in Enum.GetValues(typeof(TestEnum01)))
               {
-                <FluentOption Value="@value.ToString()">@value.ToString()</FluentOption>
+                <option value="@(value.ToString())">@(value.ToString())</option>
               }
-            </FluentSelect>
+            </select>
           </td>
           <td>
-            <FluentSelect TOption="TestEnum02"
-                          ValueChanged="(newValue) => item.TestEnum02 = Enum.Parse<TestEnum02>(newValue)">
+            <select @bind=item.TestEnum02>
               @foreach (var value in Enum.GetValues(typeof(TestEnum02)))
               {
-                <FluentOption Value="@value.ToString()">@value.ToString()</FluentOption>
+                <option value="@(value.ToString())">@(value.ToString())</option>
               }
-            </FluentSelect>
+            </select>
           </td>
         </tr>
       }
@@ -87,9 +71,6 @@
     </tbody>
   </table>
 }
-
-
-
 
 @code {
   List<TestClass>? _testData;

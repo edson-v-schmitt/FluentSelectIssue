@@ -1,0 +1,135 @@
+﻿@page "/brokenfluentselect"
+
+@rendermode @(new InteractiveServerRenderMode(false))
+
+<PageTitle>Test Page</PageTitle>
+
+<h3>Test Page</h3>
+
+<h4>Test instructions</h4>
+
+<ol>
+  <li>Click the button to generate test data</li>
+  <li>Make changes to the enum selection (as many as you wish)</li>
+  <li>Click the button to refresh the in memory data</li>
+  <li>Observe the in memory data matches what you selected initially</li>
+  <li>Click the button to generate test data (yes, again)</li>
+  <li>Click the button to refresh the in memory data (yes, again)</li>
+  <li>Notice what you have in memory, no longer matches what is on the page</li>
+</ol>
+
+<button class="btn btn-success" @onclick=GenerateTestData>Generate Test Data</button>
+
+@if (_testData is not null)
+{
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>TestEnum01</th>
+        <th>TestEnum02</th>
+      </tr>
+    </thead>
+    <tbody>
+      @foreach (var item in _testData)
+      {
+        <tr>
+          <td>@item.Name</td>
+          <td>
+            <FluentSelect TOption="TestEnum01"
+                          ValueChanged="(newValue) => item.TestEnum01 = Enum.Parse<TestEnum01>(newValue)">
+              @foreach (var value in Enum.GetValues(typeof(TestEnum01)))
+              {
+                <FluentOption Value="@value.ToString()">@value.ToString()</FluentOption>
+              }
+            </FluentSelect>
+          </td>
+          <td>
+            <FluentSelect TOption="TestEnum02"
+                          ValueChanged="(newValue) => item.TestEnum02 = Enum.Parse<TestEnum02>(newValue)">
+              @foreach (var value in Enum.GetValues(typeof(TestEnum02)))
+              {
+                <FluentOption Value="@value.ToString()">@value.ToString()</FluentOption>
+              }
+            </FluentSelect>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+}
+
+<hr />
+
+<h3>List of in memory data</h3>
+<button class="btn btn-success" @onclick=RefreshInMemoryList>In Memory Data</button>
+
+@if (_inMemoryData is not null)
+{
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>TestEnum01</th>
+        <th>TestEnum02</th>
+      </tr>
+
+    </thead>
+    <tbody>
+      @foreach (var inMemoryData in _inMemoryData)
+      {
+        <tr>
+          <td>@inMemoryData.Name</td>
+          <td>@inMemoryData.TestEnum01</td>
+          <td>@inMemoryData.TestEnum02</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+}
+
+
+
+
+@code {
+  List<TestClass>? _testData;
+  List<TestClass>? _inMemoryData;
+
+  void RefreshInMemoryList()
+  {
+    _inMemoryData = _testData?.ToList();
+    StateHasChanged();
+  }
+
+  void GenerateTestData()
+  {
+    _testData = Enumerable.Range(0, 10)
+                          .Select(i => new TestClass
+                            {
+                              Name = $"Test {i}",
+                            }).ToList();
+    StateHasChanged();
+  }
+
+  internal class TestClass
+  {
+    public string? Name { get; set; }
+    public TestEnum01 TestEnum01 { get; set; }
+    public TestEnum02 TestEnum02 { get; set; }
+  }
+
+  internal enum TestEnum01
+  {
+    Value1,
+    Value2,
+    Value3
+  }
+
+  internal enum TestEnum02
+  {
+    Test1,
+    Test2,
+    Test3
+  }
+
+}
